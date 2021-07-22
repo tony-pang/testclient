@@ -1,0 +1,82 @@
+project_id: c9485119-9f43-4e2b-9ce1-81e5f0280ddf
+project_id_header: ProjectID
+token_url: https://api.stg.identity.corp.unity3d.com/authentication/anonymous
+test_timeout: 5s
+doorman_url: ws://localhost:8080
+test_service_url: http://localhost:9191/command
+tests:
+  - name: simple test 1
+    requests:
+      - body: >
+          {
+            "attributes": {
+              "service_id": "service_1"
+            },
+            "data": {
+              "resources": [
+                "user_1"
+              ],
+              "payload": "{\"message\":\"message 1 from user 2\"}"
+            }
+          }
+    expected:
+      - id: user-1
+        aliases:
+          - id: service_1!!!user_1
+            messages:
+              - "{\"message\":\"message 1 from user 2\"}"
+
+  - name: complete test 1
+    requests:
+      - body: >
+          {
+            "attributes": {
+              "service_id": "service_1"
+            },
+            "data": {
+              "resources": [
+                "user_1"
+              ],
+              "payload": "{\"message\":\"message 1 from user 2\"}"
+            }
+          }
+      - body: >
+          {
+            "attributes": {
+              "service_id": "service_1"
+            },
+            "data": {
+              "resources": [
+                "user_1"
+              ],
+              "payload": "{\"message\":\"message 2 from user 2\"}"
+            }
+          }
+      - body: >
+          {
+            "attributes": {
+              "service_id": "service_2"
+            },
+            "data": {
+              "resources": [
+                "user_1", "user_2"
+              ],
+              "payload": "{\"message\":\"message 1 from user 3\"}"
+            }
+          }
+    expected:
+      - id: user-1
+        aliases:
+          - id: service_1!!!user_1
+            messages:
+              - "{\"message\":\"message 1 from user 2\"}"
+              - "{\"message\":\"message 2 from user 2\"}"
+          - id: service_2!!!user_1
+            messages:
+              - "{\"message\":\"message 1 from user 3\"}"
+      - id: user-2
+        aliases:
+          - id: service_2!!!user_2
+            messages:
+              - "{\"message\":\"message 1 from user 3\"}"
+
