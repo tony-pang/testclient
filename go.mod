@@ -1,4 +1,4 @@
-module github.com/Unity-Technologies/mp-prism/testclient
+module github.com/tony-pang/testclient
 
 go 1.16
 
